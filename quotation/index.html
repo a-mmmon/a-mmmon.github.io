@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sample Quotation</title>
+    <meta name="description" content="Company quotation">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>AMMMON</h2>
+                <p>
+                    1512, Bang Sao Thong<br>
+                    Samut Prakarn<br>
+                    Thailand 11431<br>
+                    Phone: 20021512<br>
+                    Mobile: 15122002
+                </p>
+            </div>
+            <div class="col-sm-4 text-right">
+                <h1>QUOTATION</h1>
+                <img src="images/logo.jpg" style="width:100px;height:100px;">
+
+
+
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-sm-4">
+                <h3>Customer:</h3>
+                <b>CC 001</b><br>
+                Samutprakarn<br>
+                Bang Sao Thong<br>
+                1508
+            </div>
+            <div class="col-sm-4">
+                <h3>Ship to:</h3>
+                <b>CC 001</b><br>
+                Samutprakarn<br>
+                Bang Sao Thong<br>
+                1508
+            </div>
+            <div class="col-sm-4 text-right">
+                <h4 id="quotationDate">28/06/2025</h4>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-primary mt-3 mb-3" data-toggle="modal" data-target="#exampleModal">
+            Add Item
+        </button>
+
+        <table class="table table-striped table-bordered" id="quotationTable">
+            <thead>
+                <tr>
+                    <th>Quantity</th>
+                    <th>Description</th>
+                    <th>Unit Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+                <tr id="sub-total">
+                    <td colspan="3" class="text-right">Subtotal</td>
+                    <td class="text-right" id="subTotal">---</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-right">VAT</td>
+                    <td class="text-right" id="vat">--</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-right">Shipping & Handling</td>
+                    <td class="text-right" id="bottom-line">0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-right"><strong>Total Due</strong></td>
+                    <td class="text-right" id="total">--</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <p class="cen">
+            <strong>Make all checks payable to:</strong><br>
+            <i>AMMMON</i><br>
+            <strong>If you have any question concerning this invoice, call: 15122002</strong><br><br>
+            <strong>THANK YOU FOR YOUR BUSINESS</strong>
+        </p>
+
+        <footer class="text-center">WHO ARE YOU</footer>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Add Item</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <tr>
+                                <td>Description</td>
+                                <td><input type="text" id="newItemDescription" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>Price Per Unit</td>
+                                <td><input type="number" min="0" id="newItemPPU" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>Quantity</td>
+                                <td><input type="number" min="0" id="newItemQty" class="form-control"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="addItem()">Save Item</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+        <script>
+            var quoationData = [];
+
+            function addItem() {
+                const d = $("#newItemDescription").val();
+                const u = parseFloat($("#newItemPPU").val());
+                const q = parseFloat($("#newItemQty").val());
+                if (!d || isNaN(u) || isNaN(q)) return;
+
+                quoationData.push({ description: d, unitPrice: u, quantity: q });
+                $('#exampleModal').modal('hide');
+                renderTable();
+            }
+
+            function renderTable() {
+                let subTotal = 0;
+                const dataRows = quoationData.map((e, i) => {
+                    const amount = e.quantity * e.unitPrice;
+                    subTotal += amount;
+                    return `<tr class="data-row">
+                        <td class="text-center">${e.quantity}</td>
+                        <td>${e.description} <button class="btn btn-sm btn-danger float-right" onclick="deleteItem(${i})">X</button></td>
+                        <td class="text-right">${e.unitPrice.toFixed(2)}</td>
+                        <td class="text-right">${amount.toFixed(2)}</td>
+                    </tr>`;
+                });
+
+                $("#subTotal").html(subTotal.toFixed(2));
+                const vat = (subTotal * 0.07).toFixed(2);
+                $("#vat").html(vat);
+                const total = (subTotal + parseFloat(vat)).toFixed(2);
+                $("#total").html(total);
+
+                $(".data-row").remove();
+                dataRows.forEach(row => $('#quotationTable tbody').append(row));
+            }
+
+            function deleteItem(index) {
+                quoationData.splice(index, 1);
+                renderTable();
+            }
+
+            $(document).ready(() => {
+                $.getJSON('data/data.json', data => {
+                    quoationData = data;
+                    $('#quotationDate').html(new Date().toLocaleDateString('en-GB'));
+                    renderTable();
+                });
+            });
+        </script>
+    </div>
+</body>
+
+</html>
